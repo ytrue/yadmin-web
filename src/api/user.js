@@ -1,4 +1,4 @@
-import {LOGIN, ROUTES} from '@/services/api'
+import {LOGIN, ROUTES} from '@/api/api'
 import {request, METHOD, removeAuthorization} from '@/utils/request'
 
 /**

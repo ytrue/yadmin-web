@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import * as Api from '@/api/gen/baseClass'
 
     export default {
         name: "add-or-update",
@@ -67,6 +68,7 @@
              */
             init(id) {
                 this.visible = true
+                this.confirmLoading = false
                 this.formId = id || 0
             },
             /**
@@ -77,11 +79,9 @@
                 const {form: {validateFields}} = this
                 // 表单验证
                 validateFields((errors, values) => {
-                    console.log(123)
                     // 提交到后端api
                     if (errors === null) {
-                        //  this.confirmLoading = true
-                        values.userId = this.formId
+                        values.id = this.formId
                         this.onFormSubmit(values)
                     }
                 })
@@ -89,8 +89,17 @@
             /**
              * 提交到后端api
              */
-            onFormSubmit() {
-                // alert(123)
+            onFormSubmit(values) {
+                Api.saveAndUpdate(values).then((result) => {
+                    // 显示成功
+                    this.$message.success(result.data.message, 1.5)
+                    // 关闭对话框
+                    this.handleCancel()
+                    // 通知父端组件提交完成了
+                    this.$emit('handleSubmit', values)
+                }).finally(() => {
+                    this.confirmLoading = false
+                })
             },
             /**
              * 关闭对话框事件

@@ -32,7 +32,6 @@ import TabsHead from '@/layouts/tabs/TabsHead'
 
 export default {
   name: 'TabsView',
-  i18n: require('./i18n'),
   components: {TabsHead, PageToggleTransition, Contextmenu, AdminLayout , AKeepAlive },
   data () {
     return {

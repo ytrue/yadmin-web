@@ -9,7 +9,7 @@ const routerMap = {
     login: {
         authority: '*',
         path: '/login',
-        component: () => import('@/pages/login')
+        component: () => import('@/views/login')
     },
     root: {
         path: '/',
@@ -26,22 +26,22 @@ const routerMap = {
     gen_generator: {
         path: 'generator',
         name: '代码生成',
-        component: () => import('@/pages/gen/generator')
+        component: () => import('@/views/gen/generator')
     },
     gen_datasource: {
         path: 'datasource',
         name: '数据源管理',
-        component: () => import('@/pages/gen/datasource')
+        component: () => import('@/views/gen/datasource')
     },
     gen_fieldType: {
         path: 'fieldType',
         name: '字段类型映射',
-        component: () => import('@/pages/gen/fieldType')
+        component: () => import('@/views/gen/fieldType')
     },
     gen_baseClass: {
         path: 'baseClass',
         name: '基类管理',
-        component: () => import('@/pages/gen/baseClass')
+        component: () => import('@/views/gen/baseClass')
     },
 
 }

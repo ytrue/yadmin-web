@@ -24,7 +24,7 @@
 
 <script>
 import {mapGetters} from 'vuex'
-import {logout} from '@/services/user'
+import {logout} from '@/api/user'
 
 export default {
   name: 'HeaderAvatar',

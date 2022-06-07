@@ -1,16 +1,19 @@
 import Vue from 'vue'
 import App from './App.vue'
 import {initRouter} from './router'
-import './theme/index.less'
+
 import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
 import '@/mock'
 import store from './store'
 import 'animate.css/source/animate.css'
-import Plugins from '@/plugins'
+import Plugins from '@/utils/plugins'
 import {initI18n} from '@/utils/i18n'
 import bootstrap from '@/bootstrap'
 import 'moment/locale/zh-cn'
+
+// 加载主题
+import '@/assets/theme/index.less'
 //加载全局样式
 import '@/assets/css/global.less'
 
@@ -25,8 +28,8 @@ Vue.use(Plugins)
 bootstrap({router, store, i18n, message: Vue.prototype.$message})
 
 new Vue({
-  router,
-  store,
-  i18n,
-  render: h => h(App),
+    router,
+    store,
+    i18n,
+    render: h => h(App),
 }).$mount('#app')

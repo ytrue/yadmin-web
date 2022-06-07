@@ -71,7 +71,7 @@
 
 <script>
     import CommonLayout from '@/layouts/CommonLayout'
-    import {login} from '@/services/user'
+    import {login} from '@/api/user'
     import {setAuthorization} from '@/utils/request'
     import {loadRoutes} from '@/utils/routerUtil'
     import {mapMutations} from 'vuex'

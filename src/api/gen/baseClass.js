@@ -10,3 +10,14 @@ const apiPath = '/gen/baseClass'
 export function page(data) {
     return request(`${apiPath}/page`, METHOD.POST, data)
 }
+
+
+/**
+ * 新增或者編輯
+ * @param params
+ * @returns {*}
+ */
+export function saveAndUpdate(params) {
+    let method = params.id ? METHOD.PUT : METHOD.POST
+    return request(apiPath, method, params)
+}

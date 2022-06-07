@@ -70,7 +70,7 @@
 </template>
 
 <script>
-    import * as Api from '@/services/gen/baseClass'
+    import * as Api from '@/api/gen/baseClass'
     import AddOrUpdate from "./modules/add-or-update";
 
     export default {

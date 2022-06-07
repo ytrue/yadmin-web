@@ -7,17 +7,17 @@ const options = {
         {
             path: '/login',
             name: '登录页',
-            component: () => import('@/pages/login')
+            component: () => import('@/views/login')
         },
         {
             path: '*',
             name: '404',
-            component: () => import('@/pages/exception/404'),
+            component: () => import('@/views/exception/404'),
         },
         {
             path: '/403',
             name: '403',
-            component: () => import('@/pages/exception/403'),
+            component: () => import('@/views/exception/403'),
         },
         {
             path: '/',
@@ -40,22 +40,22 @@ const options = {
                         {
                             path: 'generator',
                             name: '代码生成',
-                            component: () => import('@/pages/gen/generator')
+                            component: () => import('@/views/gen/generator')
                         },
                         {
                             path: 'datasource',
                             name: '数据源管理',
-                            component: () => import('@/pages/gen/datasource')
+                            component: () => import('@/views/gen/datasource')
                         },
                         {
                             path: 'fieldType',
                             name: '字段类型映射',
-                            component: () => import('@/pages/gen/fieldType')
+                            component: () => import('@/views/gen/fieldType')
                         },
                         {
                             path: 'baseClass',
                             name: '基类管理',
-                            component: () => import('@/pages/gen/baseClass')
+                            component: () => import('@/views/gen/baseClass')
                         }
                     ]
                 },
