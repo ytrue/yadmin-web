@@ -1,7 +1,7 @@
 import {request, METHOD} from '@/utils/request1'
 
 
-const apiPath = '/gen/baseClass'
+const apiPath = '/gen/fieldType'
 
 /**
  * 获得列表数据
@@ -9,6 +9,15 @@ const apiPath = '/gen/baseClass'
  */
 export function page(data) {
     return request(`${apiPath}/page`, METHOD.POST, data)
+}
+
+
+/**
+ * 获得所以数据
+ * @returns {Promise<*>}
+ */
+export function list() {
+    return request(`${apiPath}/list`, METHOD.GET)
 }
 
 

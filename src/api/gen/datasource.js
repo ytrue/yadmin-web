@@ -1,7 +1,7 @@
 import {request, METHOD} from '@/utils/request1'
 
 
-const apiPath = '/gen/baseClass'
+const apiPath = '/gen/datasource'
 
 /**
  * 获得列表数据
@@ -30,6 +30,15 @@ export function saveAndUpdate(params) {
  */
 export function detail(id) {
     return request(`${apiPath}/${id}`, METHOD.GET)
+}
+
+/**
+ * 测试连接
+ * @param id
+ * @returns {*}
+ */
+export function test(id) {
+    return request(`${apiPath}/test/${id}`, METHOD.GET)
 }
 
 
