@@ -8,7 +8,7 @@
                 <a-form class="search-form" :form="searchFrom" layout="inline">
 
                     <a-form-item label="基类编码" refs="searchFromRefs">
-                        <a-input placeholder="请输入基类编码" v-decorator="['username']"/>
+                        <a-input placeholder="请输入基类编码" v-decorator="['code',{initialValue:''}]"/>
                     </a-form-item>
 
                     <a-form-item>
@@ -31,13 +31,13 @@
             <!--头部菜单 start-->
             <a-space class="operator">
                 <a-button icon="form" type="primary" @click="addOrUpdateHandle()">新增</a-button>
-                <a-button icon="delete" type="danger">批量删除</a-button>
+                <a-button icon="delete" type="danger" @click="handleDelete()">批量删除</a-button>
             </a-space>
 
 
             <!--头部菜单 end-->
             <a-table
-                    row-key="userId"
+                    row-key="id"
                     :columns="columns"
                     :dataSource="dataSource"
                     :pagination="pagination"
@@ -55,9 +55,10 @@
 
                 <span slot="action" slot-scope="text, record">
               <a-button style="background-color: #108ee9;border-color:#108ee9" icon="edit" type="primary"
-                        size="small" @click="addOrUpdateHandle(record.userId)">编辑
+                        size="small" @click="addOrUpdateHandle(record.id)">编辑
               </a-button>
-              <a-button size="small" type="danger" icon="delete" style="margin-left: 8px">
+              <a-button size="small" type="danger" icon="delete" style="margin-left: 8px"
+                        @click="handleDelete(record.id)">
                 删除
               </a-button>
             </span>
@@ -134,17 +135,12 @@
              *初始化数据
              */
             init(type = "") {
-                // this.buttonLoading(type, true)
-                // let username = this.searchFrom.getFieldValue('username')
-                //
-                // let searchParam = [
-                //     {column: 'username', type: 'like', value: username ? username : ""}
-                // ]
-                //
+                this.buttonLoading(type, true)
+                let searchParam = [{column: 'code', type: 'like', value: this.searchFrom.getFieldValue('code')}]
 
                 Api.page({
                     currentPage: this.currentPage,
-                    fields: [],
+                    fields: searchParam,
                     limit: 10
                 }).then(response => {
                     const {data} = response.data
@@ -161,6 +157,38 @@
             addOrUpdateHandle(id) {
                 this.$nextTick(() => {
                     this.$refs.addOrUpdate.init(id)
+                })
+            },
+
+            /**
+             * 删除记录
+             */
+            handleDelete(id) {
+                const app = this
+                let deleteIds = [];
+                if (id) {
+                    deleteIds = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择需要删除的数据', 1.5)
+                        return
+                    }
+                    deleteIds = app.ids
+                }
+
+                const modal = this.$confirm({
+                    title: '您确定要删除该记录吗?',
+                    content: '删除后不可恢复',
+                    onOk() {
+                        Api.remove(deleteIds)
+                            .then((result) => {
+                                app.$message.success(result.data.message, 1.5)
+                                app.resetSearch()
+                            }).catch(() => {
+                            modal.destroy()
+                        })
+                    }
                 })
             },
 

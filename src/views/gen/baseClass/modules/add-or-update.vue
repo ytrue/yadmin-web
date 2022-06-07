@@ -12,22 +12,22 @@
         <a-spin :spinning="confirmLoading">
             <a-form :form="form">
 
-                <a-form-item label="基类编码" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+                <a-form-item label="基类编码" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <a-input placeholder="基类编码"
                              v-decorator="['code',{rules: [{required: true, message: '请输入基类编码'}]}]"/>
                 </a-form-item>
 
-                <a-form-item label="基类包名" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+                <a-form-item label="基类包名" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <a-input placeholder="基类包名"
                              v-decorator="['packageName',{rules: [{required: true, message: '请输入基类包名'}]}]"/>
                 </a-form-item>
 
-                <a-form-item label="基类字段" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+                <a-form-item label="基类字段" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <a-input placeholder="基类字段，多个字段，用英文逗号分隔"
                              v-decorator="['fields',{rules: [{required: true, message: '请输入基类字段，多个字段，用英文逗号分隔'}]}]"/>
                 </a-form-item>
 
-                <a-form-item label="备注" :labelCol="{ span: 4 }" :wrapperCol="{ span: 20 }">
+                <a-form-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <a-input placeholder="备注"
                              v-decorator="['remark']"/>
                 </a-form-item>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import _ from "lodash";
     import * as Api from '@/api/gen/baseClass'
 
     export default {
@@ -52,6 +53,14 @@
                 disabled: false,
                 // modal(对话框)确定按钮 loading
                 confirmLoading: false,
+                // 标签布局属性
+                labelCol: {
+                    span: 4
+                },
+                // 输入框布局属性
+                wrapperCol: {
+                    span: 20
+                },
                 //弹窗样式
                 bodyStyle: {
                     'max-height': '500px',
@@ -67,9 +76,24 @@
              *数据初始化
              */
             init(id) {
-                this.visible = true
-                this.confirmLoading = false
                 this.formId = id || 0
+
+                if (!this.formId) {
+                    this.visible = true
+                    this.confirmLoading = false
+                    return
+                }
+
+                Api.detail(this.formId).then((response) => {
+                    this.visible = true
+                    this.confirmLoading = false
+                    //设置值
+                    const data1 = _.pick(response.data.data, ['packageName', 'code', 'fields', 'remark']);
+                    // 渲染之前不能加入填充数据...
+                    this.$nextTick(() => {
+                        this.form.setFieldsValue(data1)
+                    })
+                })
             },
             /**
              * 确认按钮

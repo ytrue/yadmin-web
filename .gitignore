@@ -18,3 +18,4 @@ selenium-debug.log
 *.sln
 package-lock.json
 .env.production.local
+webstorm.config.js
