@@ -50,3 +50,13 @@ export function test(id) {
 export function remove(ids) {
     return request(apiPath, METHOD.DELETE, ids)
 }
+
+
+/**
+ * 所以数据源
+ * @param id
+ * @returns {*}
+ */
+export function list() {
+    return request(`${apiPath}/list`, METHOD.GET)
+}
