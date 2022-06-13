@@ -20,3 +20,12 @@ export function page(data) {
 export function list(id) {
     return request(`${apiPath}/list/${id}`, METHOD.GET)
 }
+
+
+/**
+ * 导入数据表
+ * @returns {Promise<*>}
+ */
+export function importTable(data) {
+    return request(`${apiPath}/import`, METHOD.POST, data)
+}

@@ -118,7 +118,6 @@
                 validateFields((errors, values) => {
                     // 提交到后端api
                     if (errors === null) {
-                        values.id = this.formId
                         this.onFormSubmit(values)
                     }
                 })
@@ -127,7 +126,7 @@
              * 提交到后端api
              */
             onFormSubmit(values) {
-                tableInfoApi.saveAndUpdate(values).then((result) => {
+                tableInfoApi.importTable(values).then((result) => {
                     // 显示成功
                     this.$message.success(result.data.message, 1.5)
                     // 关闭对话框
