@@ -39,7 +39,6 @@
             <a-table
                     row-key="id"
                     :columns="columns"
-                    :dataSource="dataSource"
                     :pagination="pagination"
                     @change="onChange"
                     :loading="initLoading"
@@ -53,29 +52,31 @@
               </a-tag>
              </span>>
 
-                <span slot="action" slot-scope="text, record">
+             <span slot="action" slot-scope="text, record">
               <a-button style="background-color: #108ee9;border-color:#108ee9" icon="edit" type="primary"
-                        size="small" @click="addOrUpdateHandle(record.id)">编辑
+                        size="small" @click="updateTableFieldHandle(record.id)">编辑
               </a-button>
               <a-button size="small" type="danger" icon="delete" style="margin-left: 8px"
                         @click="handleDelete(record.id)">
                 删除
               </a-button>
             </span>
-            </a-table>
+          </a-table>
 
         </div>
         <!--表格end-->
-        <add @handleSubmit="init" ref="add"></add>
+        <add @handleSubmit="init" ref="add"/>
+        <update @handleSubmit="init" ref="updateTableField"/>
     </a-card>
 </template>
 
 <script>
     import * as tableInfoApi from '@/api/gen/tableInfo'
     import add from "./modules/add";
+    import update from "./modules/update";
 
     export default {
-        components: {add},
+        components: {add, update},
         name: "index",
         data() {
             return {
@@ -107,6 +108,10 @@
                         title: '类名',
                         dataIndex: 'className',
                     },
+                    // {
+                    //     title: '所属数据源',
+                    //     dataIndex: 'datasourceName',
+                    // },
                     {
                         title: '创建时间',
                         dataIndex: 'createTime',
@@ -171,6 +176,47 @@
             addHandle(id) {
                 this.$nextTick(() => {
                     this.$refs.add.init(id)
+                })
+            },
+
+            /**
+             *修改
+             */
+            updateTableFieldHandle(id) {
+                this.$nextTick(() => {
+                    this.$refs.updateTableField.init(id)
+                })
+            },
+
+            /**
+             * 删除记录
+             */
+            handleDelete(id) {
+                const app = this
+                let deleteIds = [];
+                if (id) {
+                    deleteIds = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择需要删除的数据', 1.5)
+                        return
+                    }
+                    deleteIds = app.ids
+                }
+
+                const modal = this.$confirm({
+                    title: '您确定要删除该记录吗?',
+                    content: '删除后不可恢复',
+                    onOk() {
+                        tableInfoApi.remove(deleteIds)
+                            .then((result) => {
+                                app.$message.success(result.data.message, 1.5)
+                                app.resetSearch()
+                            }).catch(() => {
+                            modal.destroy()
+                        })
+                    }
                 })
             },
 

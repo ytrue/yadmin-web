@@ -39,7 +39,7 @@
             <a-table
                     row-key="id"
                     :columns="columns"
-                    :dataSource="dataSource"
+
                     :pagination="pagination"
                     @change="onChange"
                     :loading="initLoading"

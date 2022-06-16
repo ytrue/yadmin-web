@@ -29,3 +29,16 @@ export function list(id) {
 export function importTable(data) {
     return request(`${apiPath}/import`, METHOD.POST, data)
 }
+
+
+
+
+/**
+ * 删除
+ * @param ids
+ * @returns {*}
+ */
+export function remove(ids) {
+    return request(apiPath, METHOD.DELETE, ids)
+}
+g
