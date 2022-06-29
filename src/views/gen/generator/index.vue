@@ -52,21 +52,30 @@
               </a-tag>
              </span>>
 
-             <span slot="action" slot-scope="text, record">
+                <span slot="action" slot-scope="text, record">
               <a-button style="background-color: #108ee9;border-color:#108ee9" icon="edit" type="primary"
                         size="small" @click="updateTableFieldHandle(record.id)">编辑
               </a-button>
-              <a-button size="small" type="danger" icon="delete" style="margin-left: 8px"
+
+              <a-button size="small"
+                        style=" color: #fff; background-color: #67c23a; border-color: #67c23a;"
+                        icon="copy" class="operating-button-distance"
+                        @click="codeGenerateHandle(record.id)">
+                代码生成
+              </a-button>
+
+              <a-button size="small" type="danger" icon="delete" class="operating-button-distance"
                         @click="handleDelete(record.id)">
                 删除
               </a-button>
             </span>
-          </a-table>
+            </a-table>
 
         </div>
         <!--表格end-->
         <add @handleSubmit="init" ref="add"/>
         <update @handleSubmit="init" ref="updateTableField"/>
+        <generate @handleSubmit="init" ref="generate"/>
     </a-card>
 </template>
 
@@ -74,9 +83,10 @@
     import * as tableInfoApi from '@/api/gen/tableInfo'
     import add from "./modules/add";
     import update from "./modules/update";
+    import generate from "./modules/generate";
 
     export default {
-        components: {add, update},
+        components: {add, update, generate},
         name: "index",
         data() {
             return {
@@ -168,6 +178,15 @@
                     this.resetButtonLoading = status
                 }
                 this.initLoading = status
+            },
+
+            /**
+             * 代码生成
+             */
+            codeGenerateHandle(id) {
+                this.$nextTick(() => {
+                    this.$refs.generate.init(id)
+                })
             },
 
             /**

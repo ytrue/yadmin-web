@@ -29,7 +29,7 @@ export function saveAndUpdate(params) {
  * @returns {*}
  */
 export function detail(id) {
-    return request(`${apiPath}/${id}`, METHOD.GET)
+    return request(`${apiPath}/detail/${id}`, METHOD.GET)
 }
 
 
@@ -40,4 +40,13 @@ export function detail(id) {
  */
 export function remove(ids) {
     return request(apiPath, METHOD.DELETE, ids)
+}
+
+
+/**
+ * 列表
+ * @returns {*}
+ */
+export function list() {
+    return request(`${apiPath}/list`, METHOD.GET)
 }

@@ -30,6 +30,15 @@ export function importTable(data) {
     return request(`${apiPath}/import`, METHOD.POST, data)
 }
 
+/**
+ * 新增或者編輯
+ * @param params
+ * @returns {*}
+ */
+export function saveAndUpdate(params) {
+    let method = params.id ? METHOD.PUT : METHOD.POST
+    return request(apiPath, method, params)
+}
 
 
 
@@ -41,4 +50,14 @@ export function importTable(data) {
 export function remove(ids) {
     return request(apiPath, METHOD.DELETE, ids)
 }
-g
+
+
+/**
+ * 获得信息
+ * @param id
+ * @returns {*}
+ */
+export function detail(id) {
+    return request(`${apiPath}/detail/${id}`, METHOD.GET)
+}
+
