@@ -233,6 +233,7 @@
                         tableInfoApi.remove(deleteIds)
                             .then((result) => {
                                 app.$message.success(result.data.message, 1.5)
+                                app.ids=[]
                                 app.resetSearch()
                             }).catch(() => {
                             modal.destroy()

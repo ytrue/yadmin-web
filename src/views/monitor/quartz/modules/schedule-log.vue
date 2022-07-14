@@ -146,7 +146,7 @@
                 columns: [
                     {
                         title: '日志ID',
-                        dataIndex: 'logId',
+                        dataIndex: 'id',
                     },
                     {
                         title: '任务ID',

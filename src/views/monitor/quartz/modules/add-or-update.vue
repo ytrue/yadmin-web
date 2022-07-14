@@ -54,7 +54,7 @@
 
 <script>
 
-    import {saveAndUpdate, info} from '@/api/monitor/quartz'
+    import {info, saveAndUpdate} from '@/api/monitor/quartz'
 
     export default {
         name: "AddOrUpdate",
@@ -83,7 +83,7 @@
                     'max-height': '500px',
                     'overflow': 'auto'
                 },
-                status:0
+                status: 0
             }
         },
         methods: {

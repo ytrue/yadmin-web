@@ -29,17 +29,17 @@
             <!--头部菜单 start-->
             <a-space class="operator">
                 <a-button icon="form" type="primary" @click="addOrUpdateHandle()">新增</a-button>
-                <a-button icon="delete" type="danger" @click="handleBatchDelete">批量删除</a-button>
+                <a-button icon="delete" type="danger" @click="handleDelete()">批量删除</a-button>
                 <a-button icon="forward"
-                          @click="pauseBatchHandle"
+                          @click="pauseHandle()"
                           style=" color: #fff; background-color: #e6a23c; border-color: #e6a23c;">批量暂停
                 </a-button>
                 <a-button icon="pause"
-                          @click="resumeBatchHandle"
+                          @click="resumeHandle()"
                           style=" color: #fff; background-color: #67c23a; border-color: #67c23a;">批量恢复
                 </a-button>
                 <a-button icon="thunderbolt"
-                          @click="runTaskBatchHandle"
+                          @click="runTaskHandle()"
                           style=" color: #fff; background-color: #409eff; border-color: #409eff;">批量立即执行
                 </a-button>
                 <a-button icon="file-search"
@@ -50,7 +50,7 @@
             <!--头部菜单 end-->
 
             <a-table
-                    row-key="jobId"
+                    row-key="id"
                     :columns="columns"
                     :dataSource="dataSource"
                     :pagination="pagination"
@@ -77,7 +77,7 @@
           >编辑
           </a-button>
           <a-button
-                  @click="handleDelete(record)"
+                  @click="handleDelete(record.id)"
                   type="danger"
                   size="small"
                   icon="delete"
@@ -257,15 +257,28 @@
             /**
              * 删除记录
              */
-            handleDelete(item) {
+            handleDelete(id) {
                 const app = this
+                let deleteIds = [];
+                if (id) {
+                    deleteIds = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择需要删除的数据', 1.5)
+                        return
+                    }
+                    deleteIds = app.ids
+                }
+
                 const modal = this.$confirm({
                     title: '您确定要删除该记录吗?',
                     content: '删除后不可恢复',
                     onOk() {
-                        remove([item['id']])
+                        remove(deleteIds)
                             .then((result) => {
                                 app.$message.success(result.data.message, 1.5)
+                                app.ids=[]
                                 app.resetSearch()
                             }).catch(() => {
                             modal.destroy()
@@ -274,132 +287,90 @@
                 })
             },
 
-            /**
-             *批量删除
-             */
-            handleBatchDelete() {
-                const app = this
-                //判断一下
-                let delIds = app.ids
-                if (delIds.length === 0) {
-                    app.$message.error('请选择需要删除的数据', 1.5)
-                    return
-                }
-                const modal = this.$confirm({
-                    title: '您确定要删除选择的记录吗?',
-                    content: '删除后不可恢复',
-                    onOk() {
-                        remove(delIds)
-                            .then((result) => {
-                                app.$message.success(result.data.message, 1.5)
-                                app.resetSearch()
-                                app.ids = []
-                            }).catch(() => {
-                            modal.destroy()
-                        })
-                    }
-                })
-            },
-
-            //单个暂停
+            //暂停
             pauseHandle(id) {
                 const app = this
-                this.$confirm({
-                    title: '请问是否要暂停?',
-                    onOk() {
-                        pause([id]).then((result) => {
-                            app.$message.success(result.data.message, 1.5)
-                            app.resetSearch()
-                        })
-                    }
-                })
-            },
+                let ids = [];
 
-            //批量暂停
-            pauseBatchHandle() {
-                const app = this
-                //判断一下
-                let ids = app.ids
-                if (ids.length === 0) {
-                    app.$message.error('请选择需要暂停的数据', 1.5)
-                    return
+                if (id) {
+                    ids = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择要操作的数据', 1.5)
+                        return
+                    }
+                    ids = app.ids
                 }
+
                 this.$confirm({
-                    title: '您确定要暂停选择的记录吗?',
+                    title: '您确定要暂停选择吗?',
                     onOk() {
                         pause(ids).then((result) => {
                             app.$message.success(result.data.message, 1.5)
+                            app.ids=[]
                             app.resetSearch()
                             app.selectedRowKeys = []
                         })
                     }
                 })
             },
-            //单个恢复
+
+
+            //恢复
             resumeHandle(id) {
                 const app = this
-                this.$confirm({
-                    title: '请问是否要恢复?',
-                    onOk() {
-                        resume([id]).then((result) => {
-                            app.$message.success(result.data.message, 1.5)
-                            app.resetSearch()
-                        })
+                let ids = [];
+
+                if (id) {
+                    ids = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择要操作的数据', 1.5)
+                        return
                     }
-                })
-            },
-            //批量恢复
-            resumeBatchHandle() {
-                const app = this
-                //判断一下
-                let ids = app.ids
-                if (ids.length === 0) {
-                    app.$message.error('请选择需要恢复的数据', 1.5)
-                    return
+                    ids = app.ids
                 }
+
                 this.$confirm({
                     title: '您确定要恢复选择的记录吗?',
                     onOk() {
                         resume(ids).then((result) => {
                             app.$message.success(result.data.message, 1.5)
+                            app.ids=[]
                             app.resetSearch()
                             app.selectedRowKeys = []
                         })
                     }
                 })
             },
-            //单个立即执行
+
+            //立即执行
             runTaskHandle(id) {
                 const app = this
+                let ids = [];
+
+                if (id) {
+                    ids = [id]
+                } else {
+                    //批量删除
+                    if (app.ids.length === 0) {
+                        app.$message.error('请选择要操作的数据', 1.5)
+                        return
+                    }
+                    ids = app.ids
+                }
                 this.$confirm({
                     title: '请问是否要立即执行?',
                     onOk() {
-                        runTask([id]).then((result) => {
-                            app.$message.success(result.data.message, 1.5)
-                        })
-                    }
-                })
-            },
-            //批量立即执行
-            runTaskBatchHandle() {
-                const app = this
-                //判断一下
-                let ids = app.ids
-                if (ids.length === 0) {
-                    app.$message.error('请选择需要立即执行的数据', 1.5)
-                    return
-                }
-                this.$confirm({
-                    title: '您确定要立即执行选择的记录吗?',
-                    onOk() {
                         runTask(ids).then((result) => {
                             app.$message.success(result.data.message, 1.5)
-                            app.resetSearch()
-                            app.selectedRowKeys = []
                         })
                     }
                 })
             },
+
             /**
              * 重置搜索表单
              */
