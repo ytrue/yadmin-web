@@ -176,7 +176,9 @@
                 Api.page({
                     currentPage: this.currentPage,
                     fields: searchParam,
-                    limit: 10
+                    limit: 10,
+                    orderField: "id",
+                    asc: false
                 }).then(response => {
                     const {data} = response.data
                     this.dataSource = data.records

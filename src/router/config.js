@@ -59,6 +59,31 @@ const options = {
                         }
                     ]
                 },
+
+                {
+                    path: 'monitor',
+                    name: '监控',
+                    meta: {
+                        icon: 'eye',
+                        page: {
+                            cacheAble: false
+                        }
+                    },
+                    component: BlankView,
+                    children: [
+                        {
+                            path: 'application',
+                            name: '应用监控',
+                            component: () => import('@/views/monitor/application')
+                        },
+                        {
+                            path: 'quartz',
+                            name: '定时任务',
+                            component: () => import('@/views/monitor/quartz')
+                        }
+                    ]
+                },
+
             ]
         },
     ]

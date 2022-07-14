@@ -9,7 +9,7 @@ axios.defaults.withCredentials = true
 axios.defaults.xsrfHeaderName = xsrfHeaderName
 axios.defaults.xsrfCookieName = xsrfHeaderName
 
-const BASE_URL = 'http://127.0.0.1:7000'
+const BASE_URL = 'http://192.168.1.75:7000'
 
 // 认证类型
 const AUTH_TYPE = {
