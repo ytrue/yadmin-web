@@ -1,240 +1,142 @@
 <template>
-    <a-card>
+  <div class="system-dic-container">
+    <el-card shadow="hover">
+      <!--搜索 start-->
+      <div class="system-user-search mb15">
+        <el-input size="default" placeholder="请输入字典名称" style="max-width: 180px"></el-input>
+        <el-button size="default" type="primary" class="ml10">
+          <el-icon>
+            <ele-Search/>
+          </el-icon>
+          查询
+        </el-button>
+        <el-button size="default" type="success" class="ml10">
+          <el-icon>
+            <ele-FolderAdd/>
+          </el-icon>
+          新增字典
+        </el-button>
+      </div>
+      <!--搜索 end-->
 
-        <!--查询 start-->
-        <div class="table-operator">
-            <!-- 搜索板块 -->
-            <a-row class="row-item-search">
-                <a-form class="search-form" :form="searchFrom" layout="inline">
+      <!-- 表格 start-->
+      <el-table :data="tableData.data" style="width: 100%">
+        <el-table-column type="index" label="序号" width="50"/>
+        <el-table-column prop="dicName" label="字典名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="fieldName" label="字段名" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="status" label="字典状态" show-overflow-tooltip>
+          <template #default="scope">
+            <el-tag type="success" v-if="scope.row.status">启用</el-tag>
+            <el-tag type="info" v-else>禁用</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="describe" label="字典描述" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
+        <el-table-column label="操作" width="100">
+          <template #default="scope">
+            <el-button size="small" text type="primary" @click="onOpenEditDic(scope.row)">修改</el-button>
+            <el-button size="small" text type="primary" @click="onRowDel(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 表格 end-->
 
-                    <a-form-item label="基类编码" refs="searchFromRefs">
-                        <a-input placeholder="请输入基类编码" v-decorator="['code',{initialValue:''}]"/>
-                    </a-form-item>
+      <!--分页 start-->
+      <el-pagination
+          @size-change="onHandleSizeChange"
+          @current-change="onHandleCurrentChange"
+          class="mt15"
+          :pager-count="5"
+          :page-sizes="[10, 20, 30]"
+          v-model:current-page="tableData.pagination.pageNum"
+          background
+          v-model:page-size="tableData.pagination.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="tableData.pagination.total"
+      >
+      </el-pagination>
+      <!--分页 end-->
 
-                    <a-form-item>
-                        <a-button icon="search" @click="init('search')" type="primary"
-                                  :loading="searchButtonLoading">查询
-                        </a-button>
-                        <a-button icon="undo"
-                                  @click="resetSearch"
-                                  :loading="resetButtonLoading"
-                                  style="margin-left: 8px">重置
-                        </a-button>
-                    </a-form-item>
-                </a-form>
-            </a-row>
-        </div>
-        <!--查询 end-->
-
-        <!--表格 start-->
-        <div>
-            <!--头部菜单 start-->
-            <a-space class="operator">
-                <a-button icon="form" type="primary" @click="addOrUpdateHandle()">新增</a-button>
-                <a-button icon="delete" type="danger" @click="handleDelete()">批量删除</a-button>
-            </a-space>
-
-
-            <!--头部菜单 end-->
-            <a-table
-                    row-key="id"
-                    :columns="columns"
-
-                    :pagination="pagination"
-                    @change="onChange"
-                    :loading="initLoading"
-                    :data-source="dataSource"
-                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            >
-             <span slot="status" slot-scope="text, record">
-              <a-tag v-if="record.status === 0">禁用</a-tag>
-              <a-tag v-else color="#87d068">
-                正常
-              </a-tag>
-             </span>>
-
-                <span slot="action" slot-scope="text, record">
-              <a-button style="background-color: #108ee9;border-color:#108ee9" icon="edit" type="primary"
-                        size="small" @click="addOrUpdateHandle(record.id)">编辑
-              </a-button>
-              <a-button size="small" type="danger" icon="delete" style="margin-left: 8px"
-                        @click="handleDelete(record.id)">
-                删除
-              </a-button>
-            </span>
-            </a-table>
-
-        </div>
-        <!--表格end-->
-        <add-or-update @handleSubmit="init" ref="addOrUpdate"></add-or-update>
-    </a-card>
+    </el-card>
+  </div>
 </template>
 
-<script>
-    import * as Api from '@/api/gen/baseClass'
-    import AddOrUpdate from "./modules/add-or-update";
+<script lang="ts">
 
-    export default {
-        components: {AddOrUpdate},
-        name: "index",
-        data() {
-            return {
-                ids: [],
-                visible: true,
-                searchButtonLoading: false,
-                resetButtonLoading: false,
-                initLoading: true,
-                searchFrom: this.$form.createForm(this),
-                pagination: {
-                    total: 0,
-                    pageSize: 0,
-                    showTotal: total => `共 ${total} 条数据`,
-                },
-                columns: [
-                    {
-                        title: 'ID',
-                        dataIndex: 'id',
-                    },
-                    {
-                        title: '基类编码',
-                        dataIndex: 'code',
-                    },
-                    {
-                        title: '基类包名',
-                        dataIndex: 'packageName',
-                    },
-                    {
-                        title: '基类字段',
-                        dataIndex: 'fields',
-                    },
-                    {
-                        title: '备注',
-                        dataIndex: 'remark',
-                    },
-                    {
-                        title: '创建时间',
-                        dataIndex: 'createTime',
-                    },
-                    {
-                        title: '操作',
-                        scopedSlots: {customRender: 'action'},
-                        width: '230px',
-                        align: 'center'
-                    }
-                ],
-                dataSource: [],
-                selectedRowKeys: [],
-                currentPage: 1
-            }
-        },
-        mounted() {
-            this.init();
-        },
-        methods: {
-            /**
-             *初始化数据
-             */
-            init(type = "") {
-                this.buttonLoading(type, true)
-                let searchParam = [{column: 'code', type: 'like', value: this.searchFrom.getFieldValue('code')}]
+// 定义接口来定义对象的类型
+import {defineComponent, onMounted, reactive, toRefs} from "vue";
+import {FieldCondition, TableData} from "/@/types/TableData";
+import * as baseClassApi from '/@/api/gen/baseClass'
+import {ApiResultResponse} from "/@/types/ApiResultResponse";
 
-                Api.page({
-                    currentPage: this.currentPage,
-                    fields: searchParam,
-                    limit: 10,
-                    orderField: "id",
-                    asc: false
-                }).then(response => {
-                    const {data} = response.data
-                    this.dataSource = data.records
-                    this.pagination.pageSize = data.size
-                    this.pagination.total = data.total
-                    this.initLoading = false
-                    this.buttonLoading(type, false)
-                })
-            },
-            /**
-             *新增 - 修改
-             */
-            addOrUpdateHandle(id) {
-                this.$nextTick(() => {
-                    this.$refs.addOrUpdate.init(id)
-                })
-            },
 
-            /**
-             * 删除记录
-             */
-            handleDelete(id) {
-                const app = this
-                let deleteIds = [];
-                if (id) {
-                    deleteIds = [id]
-                } else {
-                    //批量删除
-                    if (app.ids.length === 0) {
-                        app.$message.error('请选择需要删除的数据', 1.5)
-                        return
-                    }
-                    deleteIds = app.ids
-                }
+// 定义接口来定义对象的类型
+interface TableDataRow {
+  id: number;
+  packageName: string,
+  code: string;
+  fields: string;
+  remark: string;
+  createTime: string;
+  updateTime: string;
+}
 
-                const modal = this.$confirm({
-                    title: '您确定要删除该记录吗?',
-                    content: '删除后不可恢复',
-                    onOk() {
-                        Api.remove(deleteIds)
-                            .then((result) => {
-                                app.$message.success(result.data.message, 1.5)
-                                app.ids=[]
-                                app.resetSearch()
-                            }).catch(() => {
-                            modal.destroy()
-                        })
-                    }
-                })
-            },
+export default defineComponent({
+  name: "index",
 
-            /**
-             * 按钮的loading状态
-             * @param type
-             * @param status
-             */
-            buttonLoading(type, status) {
-                if (type === "search") {
-                    this.searchButtonLoading = status
-                }
-                if (type === "reset") {
-                    this.resetButtonLoading = status
-                }
-                this.initLoading = status
-            },
+  setup() {
+    // 初始化表格数据
+    const state = reactive<TableData<TableDataRow>>(new TableData<TableDataRow>());
 
-            /**
-             * 重置搜索表单
-             */
-            resetSearch() {
-                this.searchFrom.resetFields();
-                this.init("reset")
-            },
-            /**
-             * 分页处理
-             * @param selectedRowKeys
-             */
-            onChange(selectedRowKeys) {
-                this.currentPage = selectedRowKeys.current
-                this.init()
-            },
-            /**
-             * select 动作
-             * @param row
-             */
-            onSelectChange(row) {
-                this.selectedRowKeys = row;
-                this.ids = row
-            }
-        }
+    // 初始化表格数据---这里是调用ajax的
+    const initTableData = () => {
+      // 过滤条件
+      let searchParam: Array<FieldCondition> = [
+        {column: 'code', type: 'like', value: ""}
+      ]
+
+      // 请求
+      baseClassApi.page({
+        currentPage: state.tableData.pagination.pageNum,
+        fields: searchParam,
+        limit: state.tableData.pagination.pageSize,
+        orderField: "id",
+        asc: false
+      }).then((response: ApiResultResponse) => {
+        // 表格数据赋值
+        state.tableData.data = response.data.records;
+
+        // 分页赋值
+        state.tableData.pagination.total = response.data.total;
+        state.tableData.pagination.pageNum = response.data.current
+        state.tableData.pagination.pageSize = response.data.size
+      });
+
+    };
+
+    // 分页改变
+    const onHandleSizeChange = (val: number) => {
+      state.tableData.pagination.pageSize = val;
+      initTableData();
+    };
+    // 分页改变
+    const onHandleCurrentChange = (val: number) => {
+      state.tableData.pagination.pageNum = val;
+      initTableData();
+    };
+    // 页面加载时
+    onMounted(() => {
+      initTableData();
+    });
+
+    return {
+      onHandleSizeChange,
+      onHandleCurrentChange,
+
+      ...toRefs(state),
     }
+  }
+})
 </script>
 
 <style scoped>

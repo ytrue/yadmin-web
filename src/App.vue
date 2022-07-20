@@ -1,93 +1,89 @@
 <template>
-  <a-config-provider :locale="locale" :get-popup-container="popContainer">
-    <router-view/>
-  </a-config-provider>
+	<el-config-provider :size="getGlobalComponentSize" :locale="zhCn">
+		<router-view v-show="themeConfig.lockScreenTime > 1" />
+		<LockScreen v-if="themeConfig.isLockScreen" />
+		<Setings ref="setingsRef" v-show="themeConfig.lockScreenTime > 1" />
+		<CloseFull v-if="!themeConfig.isLockScreen" />
+	</el-config-provider>
 </template>
 
-<script>
-import {enquireScreen} from './utils/util'
-import {mapState, mapMutations} from 'vuex'
-import themeUtil from '@/utils/themeUtil';
-import {getI18nKey} from '@/utils/routerUtil'
+<script lang="ts">
+import { computed, ref, getCurrentInstance, onBeforeMount, onMounted, onUnmounted, nextTick, defineComponent, watch, reactive, toRefs } from 'vue';
+import { useRoute } from 'vue-router';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import { storeToRefs } from 'pinia';
+import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import other from '/@/utils/other';
+import { Local, Session } from '/@/utils/storage';
+import setIntroduction from '/@/utils/setIconfont';
+import LockScreen from '/@/layout/lockScreen/index.vue';
+import Setings from '/@/layout/navBars/breadcrumb/setings.vue';
+import CloseFull from '/@/layout/navBars/breadcrumb/closeFull.vue';
 
-export default {
-  name: 'App',
-  data() {
-    return {
-      locale: {}
-    }
-  },
-  created () {
-    this.setHtmlTitle()
-    this.setLanguage(this.lang)
-    enquireScreen(isMobile => this.setDevice(isMobile))
-  },
-  mounted() {
-   this.setWeekModeTheme(this.weekMode)
-  },
-  watch: {
-    weekMode(val) {
-      this.setWeekModeTheme(val)
-    },
-    lang(val) {
-      this.setLanguage(val)
-      this.setHtmlTitle()
-    },
-    $route() {
-      this.setHtmlTitle()
-    },
-    'theme.mode': function(val) {
-      let closeMessage = this.$message.loading(`您选择了主题模式 ${val}, 正在切换...`)
-      themeUtil.changeThemeColor(this.theme.color, val).then(closeMessage)
-    },
-    'theme.color': function(val) {
-      let closeMessage = this.$message.loading(`您选择了主题色 ${val}, 正在切换...`)
-      themeUtil.changeThemeColor(val, this.theme.mode).then(closeMessage)
-    },
-    'layout': function() {
-      window.dispatchEvent(new Event('resize'))
-    }
-  },
-  computed: {
-    ...mapState('setting', ['layout', 'theme', 'weekMode', 'lang'])
-  },
-  methods: {
-    ...mapMutations('setting', ['setDevice']),
-    setWeekModeTheme(weekMode) {
-      if (weekMode) {
-        document.body.classList.add('week-mode')
-      } else {
-        document.body.classList.remove('week-mode')
-      }
-    },
-    setLanguage(lang) {
-      this.$i18n.locale = lang
-      switch (lang) {
-        case 'CN':
-          this.locale = require('ant-design-vue/es/locale-provider/zh_CN').default
-          break
-        case 'HK':
-          this.locale = require('ant-design-vue/es/locale-provider/zh_TW').default
-          break
-        case 'US':
-        default:
-          this.locale = require('ant-design-vue/es/locale-provider/en_US').default
-          break
-      }
-    },
-    setHtmlTitle() {
-      const route = this.$route
-      const key = route.path === '/' ? 'home.name' : getI18nKey(route.matched[route.matched.length - 1].path)
-      document.title = process.env.VUE_APP_NAME + ' | ' + this.$t(key)
-    },
-    popContainer() {
-      return document.getElementById("popContainer")
-    }
-  }
-}
+export default defineComponent({
+	name: 'app',
+	components: { LockScreen, Setings, CloseFull },
+	setup() {
+		const { proxy } = <any>getCurrentInstance();
+		const setingsRef = ref();
+		const route = useRoute();
+		const stores = useTagsViewRoutes();
+		const storesThemeConfig = useThemeConfig();
+		const { themeConfig } = storeToRefs(storesThemeConfig);
+		// 获取全局组件大小
+		const getGlobalComponentSize = computed(() => {
+			return other.globalComponentSize();
+		});
+		// 布局配置弹窗打开
+		const openSetingsDrawer = () => {
+			setingsRef.value.openDrawer();
+		};
+		// 设置初始化，防止刷新时恢复默认
+		onBeforeMount(() => {
+			// 设置批量第三方 icon 图标
+			setIntroduction.cssCdn();
+			// 设置批量第三方 js
+			setIntroduction.jsCdn();
+		});
+		// 页面加载时
+		onMounted(() => {
+			nextTick(() => {
+				// 监听布局配置弹窗点击打开
+				proxy.mittBus.on('openSetingsDrawer', () => {
+					openSetingsDrawer();
+				});
+				// 获取缓存中的布局配置
+				if (Local.get('themeConfig')) {
+					storesThemeConfig.setThemeConfig(Local.get('themeConfig'));
+					document.documentElement.style.cssText = Local.get('themeConfigStyle');
+				}
+				// 获取缓存中的全屏配置
+				if (Session.get('isTagsViewCurrenFull')) {
+					stores.setCurrenFullscreen(Session.get('isTagsViewCurrenFull'));
+				}
+			});
+		});
+		// 页面销毁时，关闭监听布局配置/i18n监听
+		onUnmounted(() => {
+			proxy.mittBus.off('openSetingsDrawer', () => {});
+		});
+		// 监听路由的变化，设置网站标题
+		watch(
+			() => route.path,
+			() => {
+				other.useTitle();
+			},
+			{
+				deep: true,
+			}
+		);
+		return {
+			zhCn,
+			themeConfig,
+			setingsRef,
+			getGlobalComponentSize,
+		};
+	},
+});
 </script>
-
-<style lang="less" scoped>
-  #id{
-  }
-</style>
