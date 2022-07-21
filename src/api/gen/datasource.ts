@@ -1,9 +1,9 @@
 import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ISearchParam} from "/@/types/TableData";
-import {IBaseClassDataForm} from "/@/types/gen/BaseClass";
+import {IDatasourceDataForm} from "/@/types/gen/Datasource";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/baseClass'
+const apiPath: string = 'http://127.0.0.1:7000/gen/datasource'
 
 
 /**
@@ -22,13 +22,14 @@ export function page(params: ISearchParam): any {
  * 新增或者編輯
  * @param params
  */
-export function saveAndUpdate(params: IBaseClassDataForm): any {
+export function saveAndUpdate(params: IDatasourceDataForm): any {
     return request({
         url: `${apiPath}`,
         method: params.id ? RequestMethod.PUT : RequestMethod.POST,
         data: params,
     })
 }
+
 
 /**
  * 获得信息
@@ -37,6 +38,17 @@ export function saveAndUpdate(params: IBaseClassDataForm): any {
 export function detail(id: number): any {
     return request({
         url: `${apiPath}/detail/${id}`,
+        method: RequestMethod.GET,
+    })
+}
+
+/**
+ * 测试连接
+ * @param id
+ */
+export function test(id: number): any {
+    return request({
+        url: `${apiPath}/test/${id}`,
         method: RequestMethod.GET,
     })
 }
@@ -54,3 +66,5 @@ export function remove(ids: Array<number>): any {
         data: ids,
     })
 }
+
+

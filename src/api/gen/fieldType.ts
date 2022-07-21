@@ -1,9 +1,9 @@
 import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ISearchParam} from "/@/types/TableData";
-import {IBaseClassDataForm} from "/@/types/gen/BaseClass";
+import {IFieldTypeDataForm} from "/@/types/gen/FieldType";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/baseClass'
+const apiPath: string = 'http://127.0.0.1:7000/gen/fieldType'
 
 
 /**
@@ -22,7 +22,7 @@ export function page(params: ISearchParam): any {
  * 新增或者編輯
  * @param params
  */
-export function saveAndUpdate(params: IBaseClassDataForm): any {
+export function saveAndUpdate(params: IFieldTypeDataForm): any {
     return request({
         url: `${apiPath}`,
         method: params.id ? RequestMethod.PUT : RequestMethod.POST,

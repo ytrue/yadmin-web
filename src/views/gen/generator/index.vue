@@ -1,5 +1,5 @@
 <template>
-  generator111
+  <div>generator111</div>
 </template>
 
 <script>

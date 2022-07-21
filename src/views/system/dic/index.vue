@@ -114,7 +114,7 @@ export default defineComponent({
 		};
 		// 打开新增字典弹窗
 		const onOpenAddDic = () => {
-			addDicRef.value.openDialog();
+			addDicRef.value.init();
 		};
 		// 打开修改字典弹窗
 		const onOpenEditDic = (row: TableDataRow) => {

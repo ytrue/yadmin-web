@@ -143,7 +143,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
             {
                 path: '/gen',
                 name: 'gen',
-                redirect: '/gen/generator',
+                redirect: '/gen/menu',
                 component: () => import('/@/layout/routerView/parent.vue'),
                 meta: {
                     title: '代码生成器',
