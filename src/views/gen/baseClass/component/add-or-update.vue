@@ -73,7 +73,7 @@ export default defineComponent({
     })
 
     // 初始化数据
-    const state = reactive(new DialogInputData(new BaseClassDataForm(), dataRule));
+    const state = reactive(new DialogInputData(new BaseClassDataForm(), dataRule))
 
     // 初始化数据
     const init = (id: undefined | number) => {
@@ -88,12 +88,12 @@ export default defineComponent({
       baseClassApi
           .detail(state.formId)
           .then((response: ApiResultResponse) => {
-            // 把弹窗打开
-            state.isShowDialog = true
             // 进行赋值
             state.dataForm = response.data
+            // 把弹窗打开
+            state.isShowDialog = true
           })
-    };
+    }
 
 
     // 提交表单

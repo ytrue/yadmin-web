@@ -67,7 +67,7 @@
         <el-table-column label="操作" width="200">
           <template #default="scope">
             <el-button size="small" text type="primary" @click="onOpenCode(scope.row.id)">代码生成</el-button>
-            <el-button size="small" text type="primary">修改</el-button>
+            <el-button size="small" text type="primary" @click="onOpenUpdate(scope.row.id)">修改</el-button>
             <el-button size="small" text type="primary" @click="deleteTableData(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -94,6 +94,7 @@
     <!--新增和编辑弹窗-->
     <generate ref="generateRef" @handleSubmit="initTableData"/>
     <add ref="addRef" @handleSubmit="initTableData"/>
+    <update ref="updateRef" @handleSubmit="initTableData"/>
 
 
   </div>
@@ -108,17 +109,19 @@ import * as tableInfoApi from '/@/api/gen/tableInfo'
 import {ApiResultResponse} from "/@/types/apiResultResponse";
 import generate from '/@/views/gen/generator/component/generate.vue';
 import add from '/@/views/gen/generator/component/add.vue';
+import update from '/@/views/gen/generator/component/update.vue';
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
 import {ITableInfoDataTable, ITableInfoSearchFrom} from "/@/types/gen/tableInfo";
 
 export default defineComponent({
   name: "index",
-  components: {generate, add},
+  components: {generate, add, update},
   setup() {
 
     // code弹窗的ref
     const generateRef = ref()
     const addRef = ref()
+    const updateRef = ref()
 
     // 搜索的ref
     const searchFromRef = ref()
@@ -130,7 +133,7 @@ export default defineComponent({
       tableName: ''
     }))
     // 初始化表格数据
-    const table = reactive(new Table<ITableInfoDataTable>());
+    const table = reactive(new Table<ITableInfoDataTable>())
 
     // 初始化表格数据---这里是调用ajax的
     const initTableData = () => {
@@ -162,7 +165,7 @@ export default defineComponent({
         table.loading = false
       })
 
-    };
+    }
 
     // 删除数据
     const deleteTableData = (id: number | undefined = undefined) => {
@@ -200,12 +203,17 @@ export default defineComponent({
     // 打开代码生成的弹窗
     const onOpenCode = (id: undefined | number = undefined) => {
       generateRef.value.init(id);
-    };
+    }
 
     // 打开新增的弹窗
     const onOpenAdd = () => {
       addRef.value.init();
-    };
+    }
+
+    // 打开修改的弹窗
+    const onOpenUpdate = (id: number) => {
+      updateRef.value.init(id);
+    }
 
     // 复选框变化时
     const handleSelectionChange = (val: ITableInfoDataTable[]) => {
@@ -219,16 +227,16 @@ export default defineComponent({
     const onHandleSizeChange = (val: number) => {
       table.pagination.pageSize = val;
       initTableData();
-    };
+    }
     // 分页改变
     const onHandleCurrentChange = (val: number) => {
       table.pagination.pageNum = val;
       initTableData();
-    };
+    }
     // 页面加载时
     onMounted(() => {
       initTableData();
-    });
+    })
 
     return {
       initTableData,
@@ -239,11 +247,12 @@ export default defineComponent({
       onOpenCode,
       handleSelectionChange,
       onOpenAdd,
+      onOpenUpdate,
       addRef,
       generateRef,
       searchFromRef,
       tableRef,
-
+      updateRef,
       ...toRefs(table),
       ...toRefs(fromSearch),
     }

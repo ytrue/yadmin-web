@@ -76,7 +76,8 @@
       <template #footer>
 				<span class="dialog-footer">
 					<el-button @click="onCancel(dataFormRef)" size="default">取 消</el-button>
-					<el-button type="primary" @click="onSubmit(dataFormRef)" size="default">提 交</el-button>
+          <el-button type="primary" @click="onSubmit(dataFormRef,'save')" size="default">保 存</el-button>
+					<el-button type="danger" @click="onSubmit(dataFormRef,'code')" size="default">生成代码</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -125,9 +126,9 @@ export default defineComponent({
     })
 
     // 初始化数据
-    const state = reactive(new DialogInputData(new TableInfoDataForm(), dataRule));
+    const state = reactive(new DialogInputData(new TableInfoDataForm(), dataRule))
     // 初始化基类列表数据
-    let baseClassList = ref<Array<IBaseClassDataTable>>([]);
+    let baseClassList = ref<Array<IBaseClassDataTable>>([])
 
     // 初始化数据
     const init = async (id: number) => {
@@ -148,22 +149,35 @@ export default defineComponent({
             // 把弹窗打开
             state.isShowDialog = true
           })
-    };
+    }
 
 
     // 提交表单
-    const onSubmit = (formEl: FormInstance | undefined) => {
+    const onSubmit = (formEl: FormInstance | undefined, type: string) => {
       formEl?.validate((valid) => {
         if (valid) {
-          //下面就是调用ajax
-          generateApi
-              .code(state.dataForm)
-              .then((response: ApiResultResponse) => {
-                ElMessage({type: 'success', message: response.message})
-                // 通知父端组件提交完成了
-                emit('handleSubmit')
-                onCancel(formEl)
-              })
+
+          if (type === 'code') {
+            //下面就是调用ajax
+            generateApi
+                .code(state.dataForm)
+                .then((response: ApiResultResponse) => {
+                  ElMessage({type: 'success', message: response.message})
+                  // 通知父端组件提交完成了
+                  emit('handleSubmit')
+                  onCancel(formEl)
+                })
+          } else {
+            //下面就是调用ajax
+            tableInfoApi
+                .saveAndUpdate(state.dataForm)
+                .then((response: ApiResultResponse) => {
+                  ElMessage({type: 'success', message: response.message})
+                  // 通知父端组件提交完成了
+                  emit('handleSubmit')
+                  onCancel(formEl)
+                })
+          }
         } else {
           return false
         }

@@ -1,7 +1,7 @@
 import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ISearchParam} from "/@/types/tableData";
-import {IImportTableData} from "/@/types/gen/tableInfo";
+import {IImportTableData, ITableInfoDataForm} from "/@/types/gen/tableInfo";
 
 const apiPath: string = 'http://127.0.0.1:7000/gen/tableInfo'
 
@@ -63,6 +63,19 @@ export function importTable(params: IImportTableData): any {
     return request({
         url: `${apiPath}/import`,
         method: RequestMethod.POST,
+        data: params,
+    })
+}
+
+
+/**
+ * 新增或者編輯
+ * @param params
+ */
+export function saveAndUpdate(params: ITableInfoDataForm): any {
+    return request({
+        url: `${apiPath}`,
+        method: params.id ? RequestMethod.PUT : RequestMethod.POST,
         data: params,
     })
 }

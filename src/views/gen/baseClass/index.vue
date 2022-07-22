@@ -131,7 +131,7 @@ export default defineComponent({
       code: ''
     }))
     // 初始化表格数据
-    const table = reactive<Table<IBaseClassDataTable>>(new Table<IBaseClassDataTable>());
+    const table = reactive<Table<IBaseClassDataTable>>(new Table<IBaseClassDataTable>())
 
     // 初始化表格数据---这里是调用ajax的
     const initTableData = () => {
@@ -163,7 +163,7 @@ export default defineComponent({
         table.loading = false
       })
 
-    };
+    }
 
     // 删除数据
     const deleteTableData = (id: number | undefined = undefined) => {
@@ -215,16 +215,18 @@ export default defineComponent({
     const onHandleSizeChange = (val: number) => {
       table.pagination.pageSize = val;
       initTableData();
-    };
+    }
+
     // 分页改变
     const onHandleCurrentChange = (val: number) => {
       table.pagination.pageNum = val;
       initTableData();
-    };
+    }
+
     // 页面加载时
     onMounted(() => {
       initTableData();
-    });
+    })
 
     return {
       initTableData,

@@ -164,7 +164,7 @@ export default defineComponent({
         table.loading = false
       })
 
-    };
+    }
 
     // 删除数据
     const deleteTableData = (id: number | undefined = undefined) => {
@@ -202,7 +202,7 @@ export default defineComponent({
     // 打开新增和编辑的弹窗
     const onOpenAddOrUpdate = (id: undefined | number = undefined) => {
       addOrUpdateRef.value.init(id);
-    };
+    }
 
     // 复选框变化时
     const handleSelectionChange = (val: IFieldTypeDataTable[]) => {
@@ -216,16 +216,16 @@ export default defineComponent({
     const onHandleSizeChange = (val: number) => {
       table.pagination.pageSize = val;
       initTableData();
-    };
+    }
     // 分页改变
     const onHandleCurrentChange = (val: number) => {
       table.pagination.pageNum = val;
       initTableData();
-    };
+    }
     // 页面加载时
     onMounted(() => {
       initTableData();
-    });
+    })
 
     return {
       initTableData,

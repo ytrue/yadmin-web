@@ -65,7 +65,7 @@ export default defineComponent({
     })
 
     // 初始化数据
-    const state = reactive(new DialogInputData(new FieldTypeDataForm(), dataRule));
+    const state = reactive(new DialogInputData(new FieldTypeDataForm(), dataRule))
 
     // 初始化数据
     const init = (id: undefined | number) => {
@@ -85,7 +85,7 @@ export default defineComponent({
             // 进行赋值
             state.dataForm = response.data
           })
-    };
+    }
 
 
     // 提交表单

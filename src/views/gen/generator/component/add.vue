@@ -3,7 +3,7 @@
     <el-dialog
         @closed="onCancel(dataFormRef)"
         draggable
-        :title="!formId ? '新增' : '修改'"
+        title="新增"
         v-model="isShowDialog"
         width="769px">
 
@@ -80,11 +80,11 @@ export default defineComponent({
     })
 
     // 初始化数据
-    const state = reactive(new DialogInputData(new ImportTableData(), dataRule));
+    const state = reactive(new DialogInputData(new ImportTableData(), dataRule))
 
     // 初始下拉框数据
-    let datasourceList = ref<Array<IDatasourceDataTable>>([]);
-    let tableInfoList = ref<Array<ITableInfoDataTable>>([]);
+    let datasourceList = ref<Array<IDatasourceDataTable>>([])
+    let tableInfoList = ref<Array<ITableInfoDataTable>>([])
 
     // 初始化数据
     const init = () => {
