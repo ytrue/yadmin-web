@@ -102,12 +102,12 @@
 
 // 定义接口来定义对象的类型
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
-import {FieldCondition, FromSearch, Table} from "/@/types/TableData";
+import {FieldCondition, FromSearch, Table} from "/@/types/tableData";
 import * as baseClassApi from '/@/api/gen/baseClass'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
+import {ApiResultResponse} from "/@/types/apiResultResponse";
 import AddOrUpdate from '/@/views/gen/baseClass/component/add-or-update.vue';
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {IBaseClassDataTable} from "/@/types/gen/BaseClass";
+import {IBaseClassDataTable} from "/@/types/gen/baseClass";
 
 // 搜索
 interface SearchFrom {

@@ -1,9 +1,9 @@
 import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ISearchParam} from "/@/types/tableData";
-import {IDatasourceDataForm} from "/@/types/gen/datasource";
+import {IImportTableData} from "/@/types/gen/tableInfo";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/datasource'
+const apiPath: string = 'http://127.0.0.1:7000/gen/tableInfo'
 
 
 /**
@@ -19,36 +19,12 @@ export function page(params: ISearchParam): any {
 }
 
 /**
- * 新增或者編輯
- * @param params
- */
-export function saveAndUpdate(params: IDatasourceDataForm): any {
-    return request({
-        url: `${apiPath}`,
-        method: params.id ? RequestMethod.PUT : RequestMethod.POST,
-        data: params,
-    })
-}
-
-
-/**
  * 获得信息
  * @param id
  */
 export function detail(id: number): any {
     return request({
         url: `${apiPath}/detail/${id}`,
-        method: RequestMethod.GET,
-    })
-}
-
-/**
- * 测试连接
- * @param id
- */
-export function test(id: number): any {
-    return request({
-        url: `${apiPath}/test/${id}`,
         method: RequestMethod.GET,
     })
 }
@@ -67,15 +43,26 @@ export function remove(ids: Array<number>): any {
     })
 }
 
-
-
 /**
- * 所以数据源
+ * 指定id获取所以的数据表
+ * @param id
  */
-export function list(): any {
+export function list(id: number): any {
     return request({
-        url: `${apiPath}/list`,
+        url: `${apiPath}/list/${id}`,
         method: RequestMethod.GET,
     })
 }
 
+
+/**
+ * 导入数据表
+ * @param params
+ */
+export function importTable(params: IImportTableData): any {
+    return request({
+        url: `${apiPath}/import`,
+        method: RequestMethod.POST,
+        data: params,
+    })
+}

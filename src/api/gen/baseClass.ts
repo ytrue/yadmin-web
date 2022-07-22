@@ -1,7 +1,7 @@
 import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
-import {ISearchParam} from "/@/types/TableData";
-import {IBaseClassDataForm} from "/@/types/gen/BaseClass";
+import {ISearchParam} from "/@/types/tableData";
+import {IBaseClassDataForm} from "/@/types/gen/baseClass";
 
 const apiPath: string = 'http://127.0.0.1:7000/gen/baseClass'
 
@@ -37,6 +37,16 @@ export function saveAndUpdate(params: IBaseClassDataForm): any {
 export function detail(id: number): any {
     return request({
         url: `${apiPath}/detail/${id}`,
+        method: RequestMethod.GET,
+    })
+}
+
+/**
+ * 获得列表
+ */
+export function list(): any {
+    return request({
+        url: `${apiPath}/list`,
         method: RequestMethod.GET,
     })
 }

@@ -1,3 +1,4 @@
+// 列表数据
 export interface IBaseClassDataTable {
     id: number;
     packageName: string,
@@ -5,20 +6,19 @@ export interface IBaseClassDataTable {
     fields: string;
     remark: string;
     createTime: string;
-    updateTime: string;
 }
 
+// 新增和修改表单数据
 export interface IBaseClassDataForm {
     id?: number | null,
-    code: string,
-    packageName: string,
-    fields: string,
+    code: string | null,
+    packageName: string | null,
+    fields: string | null,
     remark?: string | null,
 }
 
-
 export class BaseClassDataForm implements IBaseClassDataForm {
-    code = ''
-    fields = ''
-    packageName = ''
+    code = null
+    fields = null
+    packageName = null
 }

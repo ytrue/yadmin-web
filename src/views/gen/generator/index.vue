@@ -32,7 +32,7 @@
           </el-form-item>
         </el-form>
 
-        <el-button size="default" type="primary" class="ml10" @click="onOpenAddOrUpdate()">
+        <el-button size="default" type="primary" class="ml10" @click="onOpenAdd">
           <el-icon>
             <ele-DocumentAdd/>
           </el-icon>
@@ -64,9 +64,10 @@
         <el-table-column prop="className" label="类名"/>
         <el-table-column prop="createTime" label="创建时间"/>
 
-        <el-table-column label="操作" width="100">
+        <el-table-column label="操作" width="200">
           <template #default="scope">
-            <el-button size="small" text type="primary" @click="onOpenAddOrUpdate(scope.row.id)">修改</el-button>
+            <el-button size="small" text type="primary" @click="onOpenCode(scope.row.id)">代码生成</el-button>
+            <el-button size="small" text type="primary">修改</el-button>
             <el-button size="small" text type="primary" @click="deleteTableData(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -91,7 +92,8 @@
     </el-card>
 
     <!--新增和编辑弹窗-->
-    <AddOrUpdate ref="addOrUpdateRef" @handleSubmit="initTableData"/>
+    <generate ref="generateRef" @handleSubmit="initTableData"/>
+    <add ref="addRef" @handleSubmit="initTableData"/>
 
 
   </div>
@@ -101,36 +103,34 @@
 
 // 定义接口来定义对象的类型
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
-import {FieldCondition, FromSearch, Table} from "/@/types/TableData";
-import * as generatorApi from '/@/api/gen/generator'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
-import AddOrUpdate from '/@/views/gen/baseClass/component/add-or-update.vue';
+import {FieldCondition, FromSearch, Table} from "/@/types/tableData";
+import * as tableInfoApi from '/@/api/gen/tableInfo'
+import {ApiResultResponse} from "/@/types/apiResultResponse";
+import generate from '/@/views/gen/generator/component/generate.vue';
+import add from '/@/views/gen/generator/component/add.vue';
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {IGeneratorDataTable} from "/@/types/gen/Generator";
-
-// 搜索
-interface SearchFrom {
-  code: string
-}
+import {ITableInfoDataTable, ITableInfoSearchFrom} from "/@/types/gen/tableInfo";
 
 export default defineComponent({
   name: "index",
-  components: {AddOrUpdate},
+  components: {generate, add},
   setup() {
 
-    // 弹窗的ref
-    const addOrUpdateRef = ref()
+    // code弹窗的ref
+    const generateRef = ref()
+    const addRef = ref()
+
     // 搜索的ref
     const searchFromRef = ref()
     // 表格的
     const tableRef = ref()
 
     // 初始化搜索表单的数据
-    const fromSearch = reactive<FromSearch<SearchFrom>>(new FromSearch<SearchFrom>({
-      code: ''
+    const fromSearch = reactive(new FromSearch<ITableInfoSearchFrom>({
+      tableName: ''
     }))
     // 初始化表格数据
-    const table = reactive<Table<IGeneratorDataTable>>(new Table<IGeneratorDataTable>());
+    const table = reactive(new Table<ITableInfoDataTable>());
 
     // 初始化表格数据---这里是调用ajax的
     const initTableData = () => {
@@ -139,11 +139,11 @@ export default defineComponent({
 
       // 过滤条件
       let fieldCondition: Array<FieldCondition> = [
-        {column: 'code', condition: 'like', value: fromSearch.searchFrom.code}
+        {column: 'tableName', condition: 'like', value: fromSearch.searchFrom.tableName}
       ]
 
       // 请求获取数据
-      generatorApi.page({
+      tableInfoApi.page({
         currentPage: table.pagination.pageNum,
         fields: fieldCondition,
         limit: table.pagination.pageSize,
@@ -183,7 +183,7 @@ export default defineComponent({
           }
       ).then(() => {
         // 删除
-        generatorApi.remove(deleteIds).then((response: ApiResultResponse) => {
+        tableInfoApi.remove(deleteIds).then((response: ApiResultResponse) => {
           ElMessage({type: 'success', message: response.message})
           initTableData()
         })
@@ -197,13 +197,18 @@ export default defineComponent({
       initTableData()
     }
 
-    // 打开新增和编辑的弹窗
-    const onOpenAddOrUpdate = (id: undefined | number = undefined) => {
-      addOrUpdateRef.value.init(id);
+    // 打开代码生成的弹窗
+    const onOpenCode = (id: undefined | number = undefined) => {
+      generateRef.value.init(id);
+    };
+
+    // 打开新增的弹窗
+    const onOpenAdd = () => {
+      addRef.value.init();
     };
 
     // 复选框变化时
-    const handleSelectionChange = (val: IGeneratorDataTable[]) => {
+    const handleSelectionChange = (val: ITableInfoDataTable[]) => {
       // 清空之前的
       table.selectIds = []
       val.forEach((item) => {
@@ -231,9 +236,11 @@ export default defineComponent({
       deleteTableData,
       onHandleSizeChange,
       onHandleCurrentChange,
-      onOpenAddOrUpdate,
+      onOpenCode,
       handleSelectionChange,
-      addOrUpdateRef,
+      onOpenAdd,
+      addRef,
+      generateRef,
       searchFromRef,
       tableRef,
 

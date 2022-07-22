@@ -112,12 +112,12 @@
 
 // 定义接口来定义对象的类型
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
-import {FieldCondition, FromSearch, Table} from "/@/types/TableData";
+import {FieldCondition, FromSearch, Table} from "/@/types/tableData";
 import * as datasourceApi from '/@/api/gen/datasource'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
+import {ApiResultResponse} from "/@/types/apiResultResponse";
 import AddOrUpdate from '/@/views/gen/datasource/component/add-or-update.vue';
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {IDatasourceDataTable} from "/@/types/gen/Datasource";
+import {IDatasourceDataTable, IDatasourceSearchFrom} from "/@/types/gen/datasource";
 import {test} from "/@/api/gen/datasource";
 
 // 搜索
@@ -138,11 +138,12 @@ export default defineComponent({
     const tableRef = ref()
 
     // 初始化搜索表单的数据
-    const fromSearch = reactive<FromSearch<SearchFrom>>(new FromSearch<SearchFrom>({
-      code: ''
+    const fromSearch = reactive(new FromSearch<IDatasourceSearchFrom>({
+      connName: '',
+      dbType: '',
     }))
     // 初始化表格数据
-    const table = reactive<Table<IDatasourceDataTable>>(new Table<IDatasourceDataTable>());
+    const table = reactive(new Table<IDatasourceDataTable>());
 
     // 初始化表格数据---这里是调用ajax的
     const initTableData = () => {
@@ -151,7 +152,8 @@ export default defineComponent({
 
       // 过滤条件
       let fieldCondition: Array<FieldCondition> = [
-        {column: 'code', condition: 'like', value: fromSearch.searchFrom.code}
+        {column: 'connName', condition: 'like', value: fromSearch.searchFrom.connName},
+        {column: 'dbType', condition: 'eq', value: fromSearch.searchFrom.dbType}
       ]
 
       // 请求获取数据

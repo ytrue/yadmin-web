@@ -105,12 +105,12 @@
 
 // 定义接口来定义对象的类型
 import {defineComponent, onMounted, reactive, ref, toRefs} from "vue";
-import {FieldCondition, FromSearch, Table} from "/@/types/TableData";
+import {FieldCondition, FromSearch, Table} from "/@/types/tableData";
 import * as fieldTypeApi from '/@/api/gen/fieldType'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
+import {ApiResultResponse} from "/@/types/apiResultResponse";
 import AddOrUpdate from '/@/views/gen/fieldType/component/add-or-update.vue';
 import {ElForm, ElMessage, ElMessageBox} from "element-plus";
-import {IFieldTypeDataTable, IFieldTypeSearchFrom} from "/@/types/gen/FieldType";
+import {IFieldTypeDataTable, IFieldTypeSearchFrom} from "/@/types/gen/fieldType";
 
 
 export default defineComponent({
@@ -140,8 +140,8 @@ export default defineComponent({
 
       // 过滤条件
       let fieldCondition: Array<FieldCondition> = [
-        {column: 'attr_type', condition: 'like', value: fromSearch.searchFrom.attrType},
-        {column: 'column_type', condition: 'like', value: fromSearch.searchFrom.columnType}
+        {column: 'attrType', condition: 'like', value: fromSearch.searchFrom.attrType},
+        {column: 'columnType', condition: 'like', value: fromSearch.searchFrom.columnType}
       ]
 
       // 请求获取数据

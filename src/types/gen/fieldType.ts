@@ -1,3 +1,4 @@
+// 列表数据
 export interface IFieldTypeDataTable {
     id: number;
     columnType: string,
@@ -7,22 +8,22 @@ export interface IFieldTypeDataTable {
 }
 
 
-// 搜索
+// 列表搜索数据
 export interface IFieldTypeSearchFrom {
     attrType: string
     columnType: string
 }
 
-
+// 新增和修改表单数据
 export interface IFieldTypeDataForm {
     id?: number | null,
-    columnType: string,
-    attrType: string,
+    columnType: string | null,
+    attrType: string | null,
     packageName?: string | null,
 }
 
 
 export class FieldTypeDataForm implements IFieldTypeDataForm {
-    columnType = ''
-    attrType = ''
+    columnType = null
+    attrType = null
 }

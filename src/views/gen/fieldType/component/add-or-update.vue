@@ -41,10 +41,10 @@
 import {defineComponent, reactive, ref, toRefs} from 'vue';
 import {FormInstance, FormRules} from "element-plus";
 import * as fieldTypeApi from '/@/api/gen/fieldType'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
-import {DialogInputData} from "/@/types/DialogInputData";
+import {ApiResultResponse} from "/@/types/apiResultResponse";
+import {DialogInputData} from "/@/types/dialogInputData";
 import {ElMessage} from "element-plus/es";
-import {FieldTypeDataForm} from "/@/types/gen/FieldType";
+import {FieldTypeDataForm} from "/@/types/gen/fieldType";
 
 
 export default defineComponent({

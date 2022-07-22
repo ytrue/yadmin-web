@@ -14,20 +14,28 @@
           label-width="120px"
       >
 
-        <el-form-item label="基类编码" prop="code">
-          <el-input v-model="dataForm.code" placeholder="基类编码"/>
+        <el-form-item label="数据源" prop="datasourceId">
+          <el-select v-model="dataForm.datasourceId " @change="getTableList" filterable placeholder="数据源">
+            <el-option label="默认数据源" :value="0"/>
+            <el-option
+                v-for="item in datasourceList"
+                :key="item.id"
+                :label="item.connName"
+                :value="item.id"
+            />
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="基类包名" prop="packageName">
-          <el-input v-model="dataForm.packageName" placeholder="基类包名"/>
-        </el-form-item>
 
-        <el-form-item label="基类字段" prop="fields">
-          <el-input v-model="dataForm.fields" placeholder="请输入基类字段，多个字段，用英文逗号分隔"/>
-        </el-form-item>
-
-        <el-form-item label="备注" prop="remark">
-          <el-input type="textarea" v-model="dataForm.remark" placeholder="备注"/>
+        <el-form-item label="数据表" prop="tableName">
+          <el-select v-model="dataForm.tableName " placeholder="请选中数据表" filterable clearable>
+            <el-option
+                v-for="item in tableInfoList"
+                :key="item.tableName"
+                :label="item.tableName"
+                :value="item.tableName"
+            />
+          </el-select>
         </el-form-item>
 
       </el-form>
@@ -45,15 +53,17 @@
 <script lang="ts">
 import {defineComponent, reactive, ref, toRefs} from 'vue';
 import {FormInstance, FormRules} from "element-plus";
-import * as baseClassApi from '/@/api/gen/baseClass'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
-import {DialogInputData} from "/@/types/DialogInputData";
-import {BaseClassDataForm} from "/@/types/gen/BaseClass";
+import * as datasourceApi from '/@/api/gen/datasource'
+import * as tableInfoApi from '/@/api/gen/tableInfo'
+import {ApiResultResponse} from "/@/types/apiResultResponse";
+import {DialogInputData} from "/@/types/dialogInputData";
 import {ElMessage} from "element-plus/es";
+import {IDatasourceDataTable} from "/@/types/gen/datasource";
+import {ImportTableData, ITableInfoDataTable} from "/@/types/gen/tableInfo";
 
 
 export default defineComponent({
-  name: 'AddOrUpdate',
+  name: 'add',
   setup: function (props, {emit}) {
 
     // 表单的ref
@@ -61,39 +71,40 @@ export default defineComponent({
 
     // 初始化验证规则
     const dataRule: FormRules = reactive<FormRules>({
-      code: [
-        {required: true, message: '请输入基类编码', trigger: 'blur'},
+      datasourceId1: [
+        {required: true, message: '请选择数据源', trigger: 'blur'},
       ],
-      packageName: [
-        {required: true, message: '请输入基类包名', trigger: 'blur'},
-      ],
-      fields: [
-        {required: true, message: '请输入基类字段，多个字段，用英文逗号分隔', trigger: 'blur'},
-      ],
+      tableName1: [
+        {required: true, message: '请选择数据表', trigger: 'blur'},
+      ]
     })
 
     // 初始化数据
-    const state = reactive(new DialogInputData(new BaseClassDataForm(), dataRule));
+    const state = reactive(new DialogInputData(new ImportTableData(), dataRule));
+
+    // 初始下拉框数据
+    let datasourceList = ref<Array<IDatasourceDataTable>>([]);
+    let tableInfoList = ref<Array<ITableInfoDataTable>>([]);
 
     // 初始化数据
-    const init = (id: undefined | number) => {
-      state.formId = id || 0
-
-      if (!state.formId) {
-        // 把弹窗打开
-        state.isShowDialog = true
-        return
-      }
-      // 调取ajax获取详情数据
-      baseClassApi
-          .detail(state.formId)
+    const init = () => {
+      datasourceApi
+          .list()
           .then((response: ApiResultResponse) => {
+            // 进行赋值
+            datasourceList.value = response.data
             // 把弹窗打开
             state.isShowDialog = true
-            // 进行赋值
-            state.dataForm = response.data
           })
     };
+
+    // 获取数据表
+    const getTableList = (id: number) => {
+      tableInfoApi.list(id).then((response: ApiResultResponse) => {
+        // 进行赋值
+        tableInfoList.value = response.data
+      })
+    }
 
 
     // 提交表单
@@ -101,8 +112,8 @@ export default defineComponent({
       formEl?.validate((valid) => {
         if (valid) {
           // 下面就是调用ajax
-          baseClassApi
-              .saveAndUpdate(state.dataForm)
+          tableInfoApi
+              .importTable(state.dataForm)
               .then((response: ApiResultResponse) => {
                 ElMessage({type: 'success', message: response.message})
                 // 通知父端组件提交完成了
@@ -126,6 +137,9 @@ export default defineComponent({
       onCancel,
       onSubmit,
       dataFormRef,
+      datasourceList,
+      getTableList,
+      tableInfoList,
       ...toRefs(state),
     };
   },

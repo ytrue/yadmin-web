@@ -46,9 +46,9 @@
 import {defineComponent, reactive, ref, toRefs} from 'vue';
 import {FormInstance, FormRules} from "element-plus";
 import * as baseClassApi from '/@/api/gen/baseClass'
-import {ApiResultResponse} from "/@/types/ApiResultResponse";
-import {DialogInputData} from "/@/types/DialogInputData";
-import {BaseClassDataForm} from "/@/types/gen/BaseClass";
+import {ApiResultResponse} from "/@/types/apiResultResponse";
+import {DialogInputData} from "/@/types/dialogInputData";
+import {BaseClassDataForm} from "/@/types/gen/baseClass";
 import {ElMessage} from "element-plus/es";
 
 
