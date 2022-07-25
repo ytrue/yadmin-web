@@ -2,7 +2,7 @@ import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ITableFieldDataForm} from "/@/types/gen/tableField";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/tableField'
+const apiPath: string = 'gen/tableField'
 
 
 /**

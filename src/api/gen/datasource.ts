@@ -3,7 +3,7 @@ import {RequestMethod} from "/@/enums/RequestMethod";
 import {ISearchParam} from "/@/types/tableData";
 import {IDatasourceDataForm} from "/@/types/gen/datasource";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/datasource'
+const apiPath: string = 'gen/datasource'
 
 
 /**

@@ -2,7 +2,7 @@ import request from '/@/utils/request';
 import {RequestMethod} from "/@/enums/RequestMethod";
 import {ITableInfoDataForm} from "/@/types/gen/tableInfo";
 
-const apiPath: string = 'http://127.0.0.1:7000/gen/generator'
+const apiPath: string = 'gen/generator'
 
 
 /**

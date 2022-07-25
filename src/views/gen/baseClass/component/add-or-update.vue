@@ -72,6 +72,7 @@ export default defineComponent({
       ],
     })
 
+
     // 初始化数据
     const state = reactive(new DialogInputData(new BaseClassDataForm(), dataRule))
 

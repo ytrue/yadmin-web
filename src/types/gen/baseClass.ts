@@ -10,15 +10,15 @@ export interface IBaseClassDataTable {
 
 // 新增和修改表单数据
 export interface IBaseClassDataForm {
-    id?: number | null,
-    code: string | null,
-    packageName: string | null,
-    fields: string | null,
-    remark?: string | null,
+    id?: number,
+    code: string,
+    packageName: string,
+    fields: string,
+    remark?: string,
 }
 
 export class BaseClassDataForm implements IBaseClassDataForm {
-    code = null
-    fields = null
-    packageName = null
+    code = ''
+    fields = ''
+    packageName = ''
 }

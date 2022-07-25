@@ -32,8 +32,8 @@ export interface ITableInfoDataForm {
 
 // 新增数据
 export interface IImportTableData {
-    datasourceId: number | null,
-    tableName: string | null
+    datasourceId: number,
+    tableName: string
 }
 
 
@@ -49,6 +49,6 @@ export class TableInfoDataForm implements ITableInfoDataForm {
 }
 
 export class ImportTableData implements IImportTableData {
-    datasourceId = null
-    tableName = null
+    datasourceId = 0
+    tableName = ''
 }

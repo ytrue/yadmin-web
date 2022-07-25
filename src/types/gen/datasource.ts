@@ -18,19 +18,19 @@ export interface IDatasourceSearchFrom {
 
 // 新增和修改表单数据
 export interface IDatasourceDataForm {
-    id?: number | null,
-    connName: string | null,
-    dbType: string | null,
-    connUrl: string | null,
-    username: string | null,
-    password: string | null,
+    id?: number ,
+    connName: string,
+    dbType: string,
+    connUrl: string,
+    username: string,
+    password: string,
 }
 
 
 export class DatasourceDataForm implements IDatasourceDataForm {
-    connName = null
-    dbType = null
-    connUrl = null
-    username = null
-    password = null
+    connName = ''
+    dbType = ''
+    connUrl = ''
+    username = ''
+    password = ''
 }
